@@ -61,14 +61,77 @@ const PostPage = async ({ params }: { params: { id: number } }) => {
         </div>
         <div className="order-1 flex h-fit w-full pb-[1.25rem] lg:order-2 lg:mx-[1.25rem]">
           <section className="w-full rounded-2xl bg-light dark:bg-dark-3">
-            <div className="flex max-h-[273px] w-full justify-center rounded-t-2xl pb-[1.25rem]">
-              <Image
-                src={image || ""}
-                alt="post-image"
-                width={335}
-                height={117}
-                className="w-full rounded-t-2xl object-cover"
-              />
+            <div className="flex w-full justify-center rounded-t-2xl pb-[1.25rem]">
+              {image &&
+                (image.split("/")[0].split(":")[1] === "image" ||
+                image.includes("https") ? (
+                  <Image
+                    src={image || ""}
+                    alt="post-image"
+                    width={335}
+                    height={117}
+                    className="max-h-[273px] w-full rounded-t-2xl object-cover"
+                  />
+                ) : (
+                  <div className="flex h-fit w-fit justify-center rounded-t-2xl">
+                    <video controls>
+                      <source src={image} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))}
+            </div>
+            <div className="flex w-full">
+              <p className="flex w-fit justify-start px-6 pt-4 text-xl text-sc-5">
+                H1
+              </p>
+              <div className="flex w-full flex-col">
+                <div className="flex w-full justify-between">
+                  {" "}
+                  <h1 className="pb-[0.875rem] text-[1.625rem] font-semibold leading-[2.375rem] text-sc-2 dark:text-light-2 lg:pb-[1.25rem]">
+                    {heading}
+                  </h1>
+                  <div className="pb-[0.875rem] pr-[2.8rem] font-[1.625rem] leading-[2.375rem] text-sc-2 dark:text-light-2 lg:pb-[1.25rem]">
+                    {userCanEditMedia && (
+                      <MediaEditActionPopover
+                        positionStyles="translate-x-[-1.8rem] translate-y-[-0.8rem]"
+                        mediaId={postData.id}
+                        label="Post"
+                      />
+                    )}
+                  </div>
+                </div>
+                <TagsList tags={tags} />
+                <div className="pb-[1.875rem] pr-[1.25rem] text-base leading-[1.625rem]  text-sc-3 lg:pb-[2.5rem]">
+                  <SanatizedHtml content={content} />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center pb-[1.25rem] pr-[1.25rem]">
+              <div className="flex items-center justify-center px-[1.25rem]">
+                <Image
+                  src="/images/emoji_2.png"
+                  alt="emoji"
+                  width={40}
+                  height={40}
+                />
+              </div>
+              <div className="relative flex h-fit grow rounded-[1.4rem] border border-solid border-sc-5 pr-[1.25rem]">
+                <CommentForm postId={postData.id} postHeading={heading} />
+              </div>
+            </div>
+            <CommentList postId={+id} postHeading={heading} />
+          </section>
+          ;
+          {/* <section className="w-full rounded-2xl bg-light dark:bg-dark-3">
+            <div className="flex w-full justify-center rounded-t-2xl pb-[1.25rem]">
+              <div className="flex h-fit w-fit justify-center rounded-t-2xl">
+                <video controls>
+                  <source src={image} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
             <div className="flex w-full">
               <p className="flex w-fit justify-start px-6 pt-4 text-xl text-sc-5">
@@ -111,7 +174,7 @@ const PostPage = async ({ params }: { params: { id: number } }) => {
               </div>
             </div>
             <CommentList postId={+id} postHeading={heading} />
-          </section>
+          </section> */}
         </div>
         <div className="order-3 flex flex-col gap-[1.25rem] lg:order-3">
           <RightColumnWrapper>

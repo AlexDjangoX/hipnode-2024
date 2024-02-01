@@ -12,12 +12,14 @@ export type PodcastUploadProps = {
   control: Control<PostFormValuesType>;
   setPodcastPreviewUrl: (url: string) => void;
   setPodcastToUpload: (file: File) => void;
+  contentType: string;
 };
 
 const PodcastUpload = ({
   control,
   setPodcastPreviewUrl,
   setPodcastToUpload,
+  contentType,
 }: PodcastUploadProps) => {
   const handlePodcastUpload = (file: File) => {
     const reader = new FileReader();
@@ -35,7 +37,11 @@ const PodcastUpload = ({
       render={() => (
         <FormItem>
           <FormControl>
-            <ImageUpload onFileSelected={handlePodcastUpload} label="Podcast" />
+            <ImageUpload
+              onFileSelected={handlePodcastUpload}
+              label="Podcast"
+              contentType={contentType}
+            />
           </FormControl>
           <FormMessage className="capitalize text-red-80" />
         </FormItem>

@@ -66,10 +66,10 @@ export function getFormattedDateMeetUpCard(dateString: Date) {
 }
 
 type UploadImageAndBlurImageType = {
-  mainImageURL: string;
-  blurImageURL: string;
+  blurImageURL?: string;
   imageWidth?: number;
   imageHeight?: number;
+  mainImageURL: string;
 };
 
 export const uploadImageToSupabase = async (
@@ -79,40 +79,42 @@ export const uploadImageToSupabase = async (
 ): Promise<UploadImageAndBlurImageType | null> => {
   if (!file) {
     console.error("No file provided");
-
     return null;
   }
 
   try {
     const fileExtension = file.name.split(".").pop();
-    const prefix = folderName && folderName.trim() ? `${folderName}/` : "";
+    const prefix = folderName?.trim() ? `${folderName}/` : "";
     const uniqueFileName = `${prefix}image_${uuidv4()}.${fileExtension}`;
-    const projectUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}`;
+    const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+    let blurImageURL: string | undefined;
+    let imageWidth: number | undefined;
+    let imageHeight: number | undefined;
 
     const { error } = await supabase.storage
       .from(bucketName)
       .upload(uniqueFileName, file, { contentType: file.type });
 
-    const imageURL = `${projectUrl}/storage/v1/object/public/${bucketName}/${uniqueFileName}`;
-    const blur = await getBlurData(imageURL);
-    const blurImageURL = blur.blurDataURL;
-    const imageWidth = blur.width;
-    const imageHeight = blur.height;
-
     if (error) {
       console.error("File upload error:", error.message);
       return null;
-    } else {
-      console.log("File uploaded successfully:", uniqueFileName);
-      const imageAndBlurImage = {
-        mainImageURL: `${projectUrl}/storage/v1/object/public/${bucketName}/${uniqueFileName}`,
-        blurImageURL,
-        imageWidth,
-        imageHeight,
-      };
-
-      return imageAndBlurImage;
     }
+
+    const imageURL = `${projectUrl}/storage/v1/object/public/${bucketName}/${uniqueFileName}`;
+    console.log("File uploaded successfully:", imageURL);
+
+    if (fileExtension !== "mp4") {
+      const blur = await getBlurData(imageURL);
+      blurImageURL = blur.blurDataURL;
+      imageWidth = blur.width;
+      imageHeight = blur.height;
+    }
+
+    return {
+      mainImageURL: imageURL,
+      ...(fileExtension !== "mp4" && { blurImageURL, imageWidth, imageHeight }),
+    };
   } catch (error) {
     if (error instanceof Error) {
       console.error("Unexpected error:", error.message);
@@ -421,6 +423,7 @@ export function formatChatBoxDate(date: Date) {
     return timeFormatted;
   }
 }
+
 export const getMediaType = (file: File | File[]) => {
   const fileType = Array.isArray(file) ? file[0].type : file.type;
 

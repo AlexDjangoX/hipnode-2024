@@ -44,6 +44,8 @@ const PostCard = ({
     loggedInUserHasLikedPost,
   });
 
+  console.log(image);
+
   const toggleLike = async () => {
     setLikesState((prevState) => ({
       likesCount: prevState.loggedInUserHasLikedPost
@@ -89,12 +91,26 @@ const PostCard = ({
         href={`/posts/post/${id}`}
         className="hover:scale-[101%] hover:shadow-lg"
       >
-        <PostImage
-          postImage={image}
-          blurImage={blurImage}
-          imageWidth={imageWidth}
-          imageHeight={imageHeight}
-        />
+        {image &&
+          (image.split("/")[0].split(":")[1] === "image" ||
+          image.includes("https") ? (
+            <PostImage
+              postImage={image}
+              blurImage={blurImage}
+              imageWidth={imageWidth}
+              imageHeight={imageHeight}
+            />
+          ) : (
+            <div className="flex min-h-[3.5rem] w-[3.5rem] grow rounded-2xl md:min-h-[9.75rem] md:w-[9.75rem]">
+              <video
+                className="rounded-md border-2 object-cover dark:border-light-3"
+                controls
+              >
+                <source src={image} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          ))}
       </Link>
       <div className="ml-[0.875rem] flex h-auto w-full flex-col justify-between">
         <div className="flex h-full flex-col gap-2.5 ">

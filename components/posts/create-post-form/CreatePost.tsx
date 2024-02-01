@@ -245,6 +245,7 @@ const CreatePost = ({
               control={form.control}
               setImagePreviewUrl={setImagePreviewUrl}
               setImageToUpload={setImageToUpload}
+              contentType={contentType}
             />
 
             {contentType === POST_TYPE.PODCAST && (
@@ -252,6 +253,7 @@ const CreatePost = ({
                 control={form.control}
                 setPodcastPreviewUrl={setPodcastPreviewUrl}
                 setPodcastToUpload={setPodcastToUpload}
+                contentType={contentType}
               />
             )}
 
@@ -274,18 +276,25 @@ const CreatePost = ({
             />
           </div>
           <div className="flex items-center justify-center">
-            {imagePreviewUrl && (
-              <div className="flex max-h-[17rem] w-full justify-center pb-[2.5rem]">
-                <Image
-                  src={imagePreviewUrl}
-                  alt="post-image"
-                  width={335}
-                  height={117}
-                  className="w-full rounded-md object-cover"
-                />
-              </div>
-            )}
+            {imagePreviewUrl &&
+              (imagePreviewUrl.split("/")[0].split(":")[1] === "image" ? (
+                <div className="flex max-h-[17rem] w-full justify-center pb-[2.5rem]">
+                  <Image
+                    src={imagePreviewUrl}
+                    alt="post-image"
+                    width={335}
+                    height={117}
+                    className="w-full rounded-md object-cover"
+                  />
+                </div>
+              ) : (
+                <video className="pb-4" controls width="full">
+                  <source src={imagePreviewUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ))}
           </div>
+
           {contentType === POST_TYPE.PODCAST && (
             <>
               <div className="flex translate-y-[-0.625rem] items-center justify-center pb-3 pt-1">

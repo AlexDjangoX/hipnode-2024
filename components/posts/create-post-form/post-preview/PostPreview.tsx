@@ -31,10 +31,21 @@ const PostPreview = ({ htmlString, onSubmitPreview }: PostPreviewProps) => {
       <PreviewButton onSubmitPreview={onSubmitPreview} />
       <DialogContent className="max-h-[50rem] w-full max-w-[49rem] gap-10 overflow-scroll border-0 px-[1.25rem] dark:bg-dark-3 ">
         <PreviewDialogHeader />
-        <ImagePreview
-          imagePreviewUrl={imagePreviewUrl}
-          previewValues={previewValues}
-        />
+        {imagePreviewUrl &&
+          (imagePreviewUrl.split("/")[0].split(":")[1] === "image" ? (
+            <ImagePreview
+              imagePreviewUrl={imagePreviewUrl}
+              previewValues={previewValues}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <p className="pb-4 text-sc-5 dark:text-light-2">Video Preview</p>
+              <video controls width="w-full">
+                <source src={imagePreviewUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          ))}
 
         <PodcastImagePreview
           previewValues={previewValues}

@@ -11,6 +11,7 @@ const CoverImageUpload = ({
   control,
   setImagePreviewUrl,
   setImageToUpload,
+  contentType,
 }: CoverImageUploadProps) => {
   const handleFileSelected = (file: File) => {
     const reader = new FileReader();
@@ -31,6 +32,7 @@ const CoverImageUpload = ({
             <ImageUpload
               onFileSelected={handleFileSelected}
               label="Cover Image"
+              contentType={contentType}
             />
           </FormControl>
           <FormMessage className="capitalize text-red-500" />

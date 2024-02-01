@@ -5,6 +5,7 @@ export interface ImageUploadProps {
   folderName?: string;
   onFileSelected: (file: File) => void;
   label?: string;
+  contentType: string;
 }
 
 export interface UseImageUploadReturn {

@@ -26,6 +26,7 @@ export type CoverImageUploadProps = {
   control: Control<PostFormValuesType>;
   setImagePreviewUrl: (url: string) => void;
   setImageToUpload: (file: File) => void;
+  contentType: string;
 };
 
 export interface FromFieldProps {
